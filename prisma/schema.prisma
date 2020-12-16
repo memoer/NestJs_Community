@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  MENTOR
+}
+
+model User {
+  id       Int    @default(autoincrement()) @id
+  name     String @unique
+  email    String @unique
+  password String
+  role     Role
+  posts    Post[]
+}
+
+model Post {
+  id        Int       @default(autoincrement()) @id
+  title     String
+  content   String
+  createdAt DateTime  @default(now())
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int       @default(autoincrement()) @id
+  content   String
+  authorId  Int
+  author    User      @relation(fields: [authorId], references: [id])
+  postId    Int
+  post      Post      @relation(fields: [postId], references: [id])
+  comments  Comment[] @relation("CommentToComment")
+  commentId Int?
+}
+
+model Like {
+  id     Int  @default(autoincrement()) @id
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+}

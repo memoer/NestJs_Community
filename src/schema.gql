@@ -1,0 +1,93 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CommentModel {
+  author: UserModelObjectType!
+  authorId: ID!
+  commentId: ID
+  comments: [CommentModel]!
+  content: String!
+  id: ID!
+  post: PostModel!
+  postId: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type GetPostListOutputGql {
+  data: [PostModel]!
+  error: String!
+  ok: Boolean!
+}
+
+type GetPostOneOutputGql {
+  data: PostModel!
+  error: String!
+  ok: Boolean!
+}
+
+type GetUserListOutputGql {
+  data: [UserModelObjectType]!
+  error: String!
+  ok: Boolean!
+}
+
+type GetUserOneOutputGql {
+  data: UserModelObjectType!
+  error: String!
+  ok: Boolean!
+}
+
+type LoginOutputGql {
+  data: String!
+  error: String!
+  ok: Boolean!
+}
+
+type Mutation {
+  createPost(content: String!, title: String!): GetPostOneOutputGql!
+  createUser(email: String!, name: String!, password: String!, role: UserRole!): OutputGql!
+  deleteUser: OutputGql!
+  updateUser(email: String, id: Int, name: String, password: String, role: UserRole): OutputGql!
+}
+
+type OutputGql {
+  error: String!
+  ok: Boolean!
+}
+
+type PostModel {
+  authorId: ID!
+  content: String!
+  createdAt: DateTime!
+  id: ID!
+  title: String!
+}
+
+type Query {
+  getMe: GetUserOneOutputGql!
+  getMyPost: GetPostListOutputGql!
+  getPostList: GetPostListOutputGql!
+  getPostOne(id: ID!): GetPostOneOutputGql!
+  getUserList(skip: Int = 0, take: Int = 10): GetUserListOutputGql!
+  getUserOne(id: Int!): GetUserOneOutputGql!
+  login(email: String!, password: String!): LoginOutputGql!
+}
+
+type UserModelObjectType {
+  email: String!
+  id: Int!
+  name: String!
+  password: String!
+  posts: [PostModel]!
+  role: UserRole!
+}
+
+enum UserRole {
+  MENTOR
+  STUDENT
+}
