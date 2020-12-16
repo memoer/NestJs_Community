@@ -3,37 +3,52 @@ import { User } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
 import { JwtService } from '~/jwt/jwt.service';
 import { SharedService } from '~/_shared/shared.service';
-import { UserIdArgs, CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
-import { Paginated } from '~/_shared/dtos/input.dto';
+import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
+import { PaginatedArgs, GetOneIncludeArgs } from '~/_shared/dtos/input.dto';
+import { SuccessOutput, GetListOutput } from '~/_shared/dtos/output.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly _prisma: PrismaService,
+    private readonly _prismaService: PrismaService,
     private readonly _jwtService: JwtService,
     private readonly _sharedService: SharedService,
   ) {}
 
+  private _getIncludeObject(include: boolean) {
+    return include ? { include: { posts: true } } : undefined;
+  }
+
   async login({ email, password }: LoginArgs) {
-    const user = await this._prisma.user.findUnique({ where: { email } });
+    const user = await this._prismaService.user.findUnique({ where: { email } });
     if (!user) throw new NotFoundException('User not found');
-    if (!this._sharedService.checkHashWithPlain(password, user.password))
+    if (!this._sharedService.comapreHashWithPlain(password, user.password))
       throw new UnauthorizedException('Password is wrong');
     return this._jwtService.sign(user.id);
   }
 
-  async getUserOne({ id }: UserIdArgs): Promise<User> {
-    return this._prisma.user.findUnique({ where: { id } });
+  async getMeWithRelation(user: User): Promise<User> {
+    return this._prismaService.user.findUnique({
+      where: { id: user.id },
+      include: { posts: true },
+    });
   }
 
-  async getUserList({ skip, take }: Paginated): Promise<User[]> {
-    return this._prisma.user.findMany();
+  async getUserOne({ id, include }: GetOneIncludeArgs): Promise<User> {
+    return this._prismaService.user.findUnique({
+      where: { id },
+      ...this._getIncludeObject(include),
+    });
+  }
+
+  async getUserList({ page, take }: PaginatedArgs): Promise<GetListOutput<User>> {
+    return this._sharedService.getFindMany<User>({ model: 'User', page, take });
   }
 
   async createUser(data: CreateUserArgs): Promise<User> {
     const { password, ...rest } = data;
     const hashPassword = await this._sharedService.generateHash(password);
-    return this._prisma.user.create({
+    return this._prismaService.user.create({
       data: {
         password: hashPassword,
         ...rest,
@@ -41,11 +56,12 @@ export class UserService {
     });
   }
 
-  async updateUser(user: User, { id, ...data }: UpdateUserArgs): Promise<User> {
-    return this._prisma.user.update({ where: { id: user.id }, data });
+  async deleteUser(user: User): Promise<SuccessOutput> {
+    await this._prismaService.user.delete({ where: { id: user.id } });
+    return { ok: true };
   }
 
-  async deleteUser(user: User): Promise<User> {
-    return this._prisma.user.delete({ where: { id: user.id } });
+  async updateUser(user: User, data: UpdateUserArgs): Promise<User> {
+    return this._prismaService.user.update({ where: { id: user.id }, data });
   }
 }

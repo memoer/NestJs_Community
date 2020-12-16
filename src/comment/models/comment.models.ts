@@ -39,15 +39,4 @@ export class CommentModel {
   @Field(type => PostModel)
   @ValidateNested()
   post: PostModel;
-
-  @Field(type => [CommentModel], { nullable: 'items' })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CommentModel)
-  comments?: CommentModel[];
-
-  @Field(type => ID, { nullable: true })
-  @IsNumber()
-  @IsOptional()
-  commentId?: number;
 }

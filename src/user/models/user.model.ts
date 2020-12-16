@@ -1,5 +1,13 @@
 import { ObjectType, Field, registerEnumType, InputType, Int } from '@nestjs/graphql';
-import { IsEnum, IsNumber, IsString, IsArray, ValidateNested, IsPositive } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsString,
+  IsArray,
+  ValidateNested,
+  IsPositive,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { PostModel } from '~/post/models/post.model';
 import { User } from '@prisma/client';
@@ -35,9 +43,10 @@ export class UserModel implements User {
   @IsEnum(UserRole)
   role: UserRole;
 
-  @Field(type => [PostModel], { nullable: 'items' })
+  @Field(type => [PostModel], { nullable: 'itemsAndList' })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PostModel)
+  @IsOptional()
   posts?: PostModel[];
 }

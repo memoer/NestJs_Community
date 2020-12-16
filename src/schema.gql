@@ -5,8 +5,6 @@
 type CommentModel {
   author: UserModelObjectType!
   authorId: ID!
-  commentId: ID
-  comments: [CommentModel]!
   content: String!
   id: ID!
   post: PostModel!
@@ -19,63 +17,61 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type GetPostListOutputGql {
-  data: [PostModel]!
-  error: String!
-  ok: Boolean!
-}
-
-type GetPostOneOutputGql {
-  data: PostModel!
-  error: String!
-  ok: Boolean!
+  count: Int!
+  data: [PostModel!]!
+  page: Int!
+  take: Int!
 }
 
 type GetUserListOutputGql {
-  data: [UserModelObjectType]!
-  error: String!
-  ok: Boolean!
-}
-
-type GetUserOneOutputGql {
-  data: UserModelObjectType!
-  error: String!
-  ok: Boolean!
-}
-
-type LoginOutputGql {
-  data: String!
-  error: String!
-  ok: Boolean!
+  count: Int!
+  data: [UserModelObjectType!]!
+  page: Int!
+  take: Int!
 }
 
 type Mutation {
-  createPost(content: String!, title: String!): GetPostOneOutputGql!
-  createUser(email: String!, name: String!, password: String!, role: UserRole!): OutputGql!
-  deleteUser: OutputGql!
-  updateUser(email: String, id: Int, name: String, password: String, role: UserRole): OutputGql!
-}
-
-type OutputGql {
-  error: String!
-  ok: Boolean!
+  createLike(postId: Int!): SuccessOutput!
+  createPost(content: String!, title: String!): PostWithoutAuthorOutputGql!
+  createUser(email: String!, name: String!, password: String!, role: UserRole!): UserModelObjectType!
+  deleteLike(id: Int!): SuccessOutput!
+  deletePost(id: Int!): SuccessOutput!
+  deleteUser: SuccessOutput!
+  updatePost(content: String, id: Int, title: String): PostWithoutAuthorOutputGql!
+  updateUser(email: String, name: String, password: String, role: UserRole): UserModelObjectType!
 }
 
 type PostModel {
-  authorId: ID!
+  author: UserModelObjectType!
+  authorId: Int!
+  comments: [CommentModel]
   content: String!
   createdAt: DateTime!
-  id: ID!
+  id: Int!
+  title: String!
+}
+
+type PostWithoutAuthorOutputGql {
+  authorId: Int!
+  comments: [CommentModel]
+  content: String!
+  createdAt: DateTime!
+  id: Int!
   title: String!
 }
 
 type Query {
-  getMe: GetUserOneOutputGql!
-  getMyPost: GetPostListOutputGql!
-  getPostList: GetPostListOutputGql!
-  getPostOne(id: ID!): GetPostOneOutputGql!
-  getUserList(skip: Int = 0, take: Int = 10): GetUserListOutputGql!
-  getUserOne(id: Int!): GetUserOneOutputGql!
-  login(email: String!, password: String!): LoginOutputGql!
+  getMe(include: Boolean = false): UserModelObjectType!
+  getMyPost(include: Boolean = false, page: Int = 1, take: Int = 10): GetPostListOutputGql!
+  getPostList(include: Boolean = false, page: Int = 1, take: Int = 10): GetPostListOutputGql!
+  getPostOne(id: Int!, include: Boolean = false): PostModel!
+  getUserList(page: Int = 1, take: Int = 10): GetUserListOutputGql!
+  getUserOne(id: Int!, include: Boolean = false): UserModelObjectType!
+  login(email: String!, password: String!): String!
+}
+
+type SuccessOutput {
+  ok: Boolean!
 }
 
 type UserModelObjectType {
@@ -83,7 +79,7 @@ type UserModelObjectType {
   id: Int!
   name: String!
   password: String!
-  posts: [PostModel]!
+  posts: [PostModel]
   role: UserRole!
 }
 

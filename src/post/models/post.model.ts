@@ -1,13 +1,21 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { UserModel } from '~/user/models/user.model';
 import { CommentModel } from '~/comment/models/comment.models';
-import { IsNumber, IsString, IsDate, ValidateNested, IsArray, IsPositive } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsDate,
+  ValidateNested,
+  IsArray,
+  IsPositive,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { Post } from '@prisma/client';
 
 @ObjectType()
 export class PostModel implements Post {
-  @Field(type => ID)
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
   id: number;
@@ -24,16 +32,19 @@ export class PostModel implements Post {
   @IsDate()
   createdAt: Date;
 
-  @Field(type => ID)
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
   authorId: number;
 
+  @Field(type => UserModel)
   @ValidateNested()
   author: UserModel;
 
+  @Field(type => [CommentModel], { nullable: 'itemsAndList' })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CommentModel)
+  @IsOptional()
   comments?: CommentModel[];
 }

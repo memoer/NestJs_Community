@@ -1,9 +1,9 @@
-import { ObjectType } from '@nestjs/graphql';
-import { getOutputGql } from '~/_shared/dtos/output.dto';
+import { ObjectType, OmitType } from '@nestjs/graphql';
+import { getListOutput } from '~/_shared/dtos/output.dto';
 import { PostModel } from '../models/post.model';
 
 @ObjectType()
-export class GetPostOneOutputGql extends getOutputGql(PostModel) {}
+export class GetPostListOutputGql extends getListOutput(PostModel) {}
 
 @ObjectType()
-export class GetPostListOutputGql extends getOutputGql([PostModel]) {}
+export class PostWithoutAuthorOutputGql extends OmitType(PostModel, ['author'], ObjectType) {}

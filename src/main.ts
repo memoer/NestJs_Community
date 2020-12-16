@@ -4,7 +4,6 @@ import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import { AppModule } from './app.module';
-import { SharedInterceptor } from './_shared/shared.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,7 +25,6 @@ async function bootstrap() {
   );
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(compression());
-  app.useGlobalInterceptors(new SharedInterceptor());
   await app.listen(3000);
 }
 bootstrap();

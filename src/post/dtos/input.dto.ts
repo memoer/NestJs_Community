@@ -1,8 +1,12 @@
-import { ArgsType, PickType } from '@nestjs/graphql';
+import { ArgsType, PickType, PartialType } from '@nestjs/graphql';
 import { PostModel } from '../models/post.model';
 
 @ArgsType()
-export class PostIdArgs extends PickType(PostModel, ['id'], ArgsType) {}
+export class CreatePostArgs extends PickType(PostModel, ['title', 'content'], ArgsType) {}
 
 @ArgsType()
-export class CreatePostArgs extends PickType(PostModel, ['title', 'content'], ArgsType) {}
+export class UpdatePostArgs extends PickType(
+  PartialType(PostModel),
+  ['id', 'title', 'content'],
+  ArgsType,
+) {}

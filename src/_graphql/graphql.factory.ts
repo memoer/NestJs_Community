@@ -5,7 +5,7 @@ import appConfig from '~/_config/app.config';
 import { CustomRequest } from '~/jwt/jwt.middleware';
 import { User } from '@prisma/client';
 
-export interface MyContext {
+export interface GqlContext {
   user: User;
 }
 

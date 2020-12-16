@@ -2,9 +2,6 @@ import { ArgsType, PickType, PartialType } from '@nestjs/graphql';
 import { UserModel } from '../models/user.model';
 
 @ArgsType()
-export class UserIdArgs extends PickType(UserModel, ['id'], ArgsType) {}
-
-@ArgsType()
 export class CreateUserArgs extends PickType(
   UserModel,
   ['name', 'email', 'password', 'role'],
@@ -14,7 +11,7 @@ export class CreateUserArgs extends PickType(
 @ArgsType()
 export class UpdateUserArgs extends PickType(
   PartialType(UserModel),
-  ['id', 'name', 'email', 'password', 'role'],
+  ['name', 'email', 'password', 'role'],
   ArgsType,
 ) {}
 
