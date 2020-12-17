@@ -14,7 +14,7 @@ export class GlobalGuard implements CanActivate {
       KEY: { ROLES },
       VALUE: { ANY },
     } = sharedConstants.META_DATA;
-    const roles = this._reflector.getAllAndOverride<AllowedRoles>(ROLES, [context.getHandler()]);
+    const roles = this._reflector.get<AllowedRoles>(ROLES, context.getHandler());
     // public
     if (!roles) return true;
     const gqlCtx = GqlExecutionContext.create(context).getContext<GqlContext>();

@@ -8,7 +8,7 @@ import { PostModel } from './models/post.model';
 import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
 import { GetPostListOutputGql, PostWithoutAuthorOutputGql } from './dtos/output.dto';
 import { GetListOutput, SuccessOutput } from '~/_shared/dtos/output.dto';
-import { CheckModelOf } from '~/auth/isMine.decorator';
+import { CheckModelOf } from '~/auth/checkModelGuard.decorator';
 
 @Resolver(of => PostModel)
 export class PostResolver {
@@ -45,13 +45,13 @@ export class PostResolver {
   }
 
   @Mutation(returns => SuccessOutput)
-  @CheckModelOf('Post')
+  @CheckModelOf('Post', 'MINE')
   deletePost(@Args() args: GetOneArgs): Promise<SuccessOutput> {
     return this._postService.deletePost(args);
   }
 
   @Mutation(returns => PostWithoutAuthorOutputGql)
-  @CheckModelOf('Post')
+  @CheckModelOf('Post', 'MINE')
   updatePost(@Args() args: UpdatePostArgs): Promise<Post> {
     return this._postService.updatePost(args);
   }
