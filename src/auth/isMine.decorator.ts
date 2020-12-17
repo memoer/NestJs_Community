@@ -13,11 +13,6 @@ import sharedConstants from '~/_shared/shared.constants';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { GqlContext } from '~/_graphql/graphql.factory';
 
-export enum WhatCheck {
-  MINE,
-  EXISTS,
-}
-
 @Injectable()
 class CheckModelOfGuard implements CanActivate {
   constructor(

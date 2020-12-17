@@ -1,16 +1,16 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { UserModel } from '~/user/models/user.model';
 import { PostModel } from '~/post/models/post.model';
 import { IsNumber, ValidateNested, IsPositive } from 'class-validator';
 
 @ObjectType()
 export class LikeModel {
-  @Field(type => ID)
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
   id: number;
 
-  @Field(type => ID)
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
   userId: number;
@@ -19,7 +19,7 @@ export class LikeModel {
   @ValidateNested()
   user: UserModel;
 
-  @Field(type => ID)
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
   postId: number;

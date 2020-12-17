@@ -48,6 +48,7 @@ type PostModel {
   content: String!
   createdAt: DateTime!
   id: Int!
+  likeCount: Int!
   title: String!
 }
 

@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Query, Args, ResolveField, Int, Parent } from '@nestjs/graphql';
 import { Post, User } from '@prisma/client';
 import { PostService } from './post.service';
 import { Roles } from '~/auth/roles.decorator';
@@ -8,11 +8,16 @@ import { PostModel } from './models/post.model';
 import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
 import { GetPostListOutputGql, PostWithoutAuthorOutputGql } from './dtos/output.dto';
 import { GetListOutput, SuccessOutput } from '~/_shared/dtos/output.dto';
-import { CheckModelOf, WhatCheck } from '~/auth/isMine.decorator';
+import { CheckModelOf } from '~/auth/isMine.decorator';
 
-@Resolver()
+@Resolver(of => PostModel)
 export class PostResolver {
   constructor(private readonly _postService: PostService) {}
+
+  @ResolveField(type => Int)
+  likeCount(@Parent() data: Post): Promise<number> {
+    return this._postService.likeCount(data.id);
+  }
 
   @Query(returns => GetPostListOutputGql)
   @Roles('ANY')

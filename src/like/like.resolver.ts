@@ -16,7 +16,7 @@ export class LikeResolver {
   }
 
   @Mutation(returns => SuccessOutput)
-  deleteLike(@GetUser() user: User, @Args() args: DeleteLikeInputArgs): Promise<SuccessOutput> {
-    return this._likeService.deleteLike(user, args);
+  deleteLike(@Args() args: DeleteLikeInputArgs): Promise<SuccessOutput> {
+    return this._likeService.deleteLike(args);
   }
 }
