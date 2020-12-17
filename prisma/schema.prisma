@@ -46,4 +46,6 @@ model Like {
   user   User @relation(fields: [userId], references: [id])
   postId Int
   post   Post @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId], name: "Like_userId_postId_unique_constraint")
 }

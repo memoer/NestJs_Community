@@ -13,47 +13,50 @@ import sharedConstants from '~/_shared/shared.constants';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { GqlContext } from '~/_graphql/graphql.factory';
 
-export enum WhatCheck {
-  MINE,
-  EXISTS,
+type WhatCheck = 'MINE' | 'EXISTS';
+
+interface MetaDataValue
+  extends Record<
+    Exclude<keyof typeof sharedConstants['META_DATA']['KEY'], 'ROLES' | 'WHAT_CHECK'>,
+    string
+  > {
+  readonly WHAT_CHECK: WhatCheck;
 }
 
 @Injectable()
-class CheckModelOfGuard implements CanActivate {
+class CheckModelGuard implements CanActivate {
   constructor(
     private readonly _reflector: Reflector,
     private readonly _prismaService: PrismaService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const {
-      KEY: { WHAT_MODEL, KEY_NAME_TO_CHECK },
-    } = sharedConstants.META_DATA;
+    const { KEY } = sharedConstants.META_DATA;
     const gqlCtx = GqlExecutionContext.create(context).getContext<GqlContext>();
-    const whatModel = this._reflector.getAllAndOverride<Prisma.ModelName>(WHAT_MODEL, [
-      context.getHandler(),
-    ]);
-    const keyNameToCheck = this._reflector.getAllAndOverride<string>(KEY_NAME_TO_CHECK, [
-      context.getHandler(),
-    ]);
+    const { WHAT_MODEL, KEY_NAME_TO_CHECK, WHAT_CHECK } = Object.keys(KEY).reduce((obj, key) => {
+      const value = this._reflector.get(key, context.getHandler());
+      obj[key] = value;
+      return obj;
+    }, {}) as MetaDataValue;
     // check whether user logged in
     const { user } = gqlCtx;
     if (!user) throw new ForbiddenException('Please Log in'); // require login
-    const post = await this._prismaService[whatModel.toLowerCase()].findUnique({
-      where: { id: context.getArgs()[1][keyNameToCheck] },
+    const post = await this._prismaService[WHAT_MODEL.toLowerCase()].findUnique({
+      where: { id: context.getArgs()[1][KEY_NAME_TO_CHECK] },
     });
     // throw error if model is not exists
-    if (!post) throw new NotFoundException(`${whatModel} not found`);
-    return user.id === post.authorId;
+    if (!post) throw new NotFoundException(`${WHAT_MODEL} not found`);
+    return WHAT_CHECK === 'EXISTS' || user.id === post.authorId;
   }
 }
 
-export function CheckModelOf(model: Prisma.ModelName, keyNameToCheck = 'id') {
+export function CheckModelOf(model: Prisma.ModelName, whatCheck: WhatCheck, keyNameToCheck = 'id') {
   const {
-    KEY: { WHAT_MODEL, KEY_NAME_TO_CHECK },
+    KEY: { WHAT_MODEL, WHAT_CHECK, KEY_NAME_TO_CHECK },
   } = sharedConstants.META_DATA;
   return applyDecorators(
     SetMetadata(WHAT_MODEL, model),
+    SetMetadata(WHAT_CHECK, whatCheck),
     SetMetadata(KEY_NAME_TO_CHECK, keyNameToCheck),
-    UseGuards(CheckModelOfGuard),
+    UseGuards(CheckModelGuard),
   );
 }

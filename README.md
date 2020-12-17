@@ -1,8 +1,5 @@
 - [x] user
 - [x] post
-- [ ] like
-  - resolver 한 개만 만들 것
-  - 어떠한 userId - postId가 동일한 Like Data가 있다면 제거 / 없다면 생성
-- [ ] comment
+- [x] like
 - [ ] subscription
 - [ ] redis

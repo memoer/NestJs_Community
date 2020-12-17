@@ -58,7 +58,7 @@ export class UserService {
 
   async deleteUser(user: User): Promise<SuccessOutput> {
     await this._prismaService.user.delete({ where: { id: user.id } });
-    return { ok: true };
+    return this._sharedService.successResponse();
   }
 
   async updateUser(user: User, data: UpdateUserArgs): Promise<User> {

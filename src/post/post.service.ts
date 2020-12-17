@@ -12,9 +12,15 @@ export class PostService {
     private readonly _prismaService: PrismaService,
     private readonly _sharedService: SharedService,
   ) {}
+
   private _getIncludeObject(include: boolean) {
     return include ? { include: { comments: true } } : undefined;
   }
+
+  async likeCount(postId: Post['id']): Promise<number> {
+    return this._prismaService.like.count({ where: { postId } });
+  }
+
   async getMyPost(
     user: User,
     { include, ...args }: PaginatedIncludeArgs,
@@ -26,12 +32,14 @@ export class PostService {
       ...args,
     });
   }
+
   async getPostOne({ id, include }: GetOneIncludeArgs): Promise<Post> {
     return this._prismaService.post.findOne({
       where: { id },
       ...this._getIncludeObject(include),
     });
   }
+
   async getPostList({ include, ...args }: PaginatedIncludeArgs): Promise<GetListOutput<Post>> {
     return this._sharedService.getFindMany<Post, Prisma.PostInclude>({
       model: 'Post',
@@ -39,6 +47,7 @@ export class PostService {
       ...args,
     });
   }
+
   async createPost(user: User, args: CreatePostArgs): Promise<Post> {
     return this._prismaService.post.create({
       data: {
@@ -51,10 +60,12 @@ export class PostService {
       },
     });
   }
+
   async deletePost({ id }: GetOneArgs): Promise<SuccessOutput> {
     await this._prismaService.post.delete({ where: { id } });
-    return { ok: true };
+    return this._sharedService.successResponse();
   }
+
   async updatePost({ id, ...data }: UpdatePostArgs): Promise<Post> {
     return this._prismaService.post.update({ where: { id }, data });
   }

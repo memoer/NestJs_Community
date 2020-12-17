@@ -17,6 +17,10 @@ export class SharedService {
 
   constructor(private readonly _prismaService: PrismaService) {}
 
+  public successResponse() {
+    return { ok: true };
+  }
+
   public generateHash(plainString: string): Promise<string> {
     return bcrypt.hash(plainString, this._saltOrRounds);
   }
