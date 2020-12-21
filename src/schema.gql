@@ -2,13 +2,31 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type CommentModel {
+type CommentChildModel {
   author: UserModelObjectType!
-  authorId: ID!
+  authorId: Int!
   content: String!
-  id: ID!
-  post: PostModel!
-  postId: ID!
+  createdAt: DateTime!
+  id: Int!
+  tags: String
+}
+
+input CommentIncludeInputType {
+  author: Boolean
+  childs: Boolean
+}
+
+type CommentModelObjectType {
+  author: UserModelObjectType!
+  authorId: Int!
+  childs: [CommentChildModel]
+  commentId: Int
+  content: String!
+  createdAt: DateTime!
+  id: Int!
+  post: PostModelObjectType
+  postId: Int
+  tags: String
 }
 
 """
@@ -16,9 +34,16 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type GetCommentOutputGql {
+  count: Int!
+  data: [CommentModelObjectType!]!
+  page: Int!
+  take: Int!
+}
+
 type GetPostListOutputGql {
   count: Int!
-  data: [PostModel!]!
+  data: [PostModelObjectType!]!
   page: Int!
   take: Int!
 }
@@ -31,20 +56,28 @@ type GetUserListOutputGql {
 }
 
 type Mutation {
+  createComment(commentId: Int, content: String!, postId: Int, tags: [Int]): CommentModelObjectType!
   createLike(postId: Int!): SuccessOutput!
   createPost(content: String!, title: String!): PostWithoutAuthorOutputGql!
   createUser(email: String!, name: String!, password: String!, role: UserRole!): UserModelObjectType!
+  deleteComment(id: Int!): SuccessOutput!
   deleteLike(id: Int!): SuccessOutput!
   deletePost(id: Int!): SuccessOutput!
   deleteUser: SuccessOutput!
-  updatePost(content: String, id: Int, title: String): PostWithoutAuthorOutputGql!
+  updateComment(content: String, id: Int!, tags: String): CommentModelObjectType!
+  updatePost(content: String, id: Int!, title: String): PostWithoutAuthorOutputGql!
   updateUser(email: String, name: String, password: String, role: UserRole): UserModelObjectType!
 }
 
-type PostModel {
+type NotifyToUserOutputGql {
+  message: String!
+  userId: Int!
+}
+
+type PostModelObjectType {
   author: UserModelObjectType!
   authorId: Int!
-  comments: [CommentModel]
+  comments: [CommentModelObjectType]
   content: String!
   createdAt: DateTime!
   id: Int!
@@ -54,7 +87,7 @@ type PostModel {
 
 type PostWithoutAuthorOutputGql {
   authorId: Int!
-  comments: [CommentModel]
+  comments: [CommentModelObjectType]
   content: String!
   createdAt: DateTime!
   id: Int!
@@ -62,13 +95,18 @@ type PostWithoutAuthorOutputGql {
 }
 
 type Query {
+  getCommentOfPost(include: CommentIncludeInputType, page: Int = 1, postId: Int!, take: Int = 10): GetCommentOutputGql!
   getMe(include: Boolean = false): UserModelObjectType!
   getMyPost(include: Boolean = false, page: Int = 1, take: Int = 10): GetPostListOutputGql!
   getPostList(include: Boolean = false, page: Int = 1, take: Int = 10): GetPostListOutputGql!
-  getPostOne(id: Int!, include: Boolean = false): PostModel!
+  getPostOne(id: Int!, include: Boolean = false): PostModelObjectType!
   getUserList(page: Int = 1, take: Int = 10): GetUserListOutputGql!
   getUserOne(id: Int!, include: Boolean = false): UserModelObjectType!
   login(email: String!, password: String!): String!
+}
+
+type Subscription {
+  notifyToUser: NotifyToUserOutputGql!
 }
 
 type SuccessOutput {
@@ -80,7 +118,7 @@ type UserModelObjectType {
   id: Int!
   name: String!
   password: String!
-  posts: [PostModel]
+  posts: [PostModelObjectType]
   role: UserRole!
 }
 

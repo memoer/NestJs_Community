@@ -12,19 +12,20 @@ import { LikeModule } from './like/like.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { PubsubModule } from './_pubsub/pubsub.module';
 
 @Module({
   imports: [
     //! essential module
-    MyConfigModule,
-    PrismaModule,
-    MyGraphQLModule,
-    TerminusModule,
+    MyGraphQLModule, // for graphql
+    TerminusModule, // for healthcheck
+    PubsubModule, // for subscription
+    JwtModule, // for jwt
     //! global module
-    SharedModule,
-    //* module
-    AuthModule,
-    JwtModule,
+    MyConfigModule, // for app env
+    PrismaModule, // for database
+    AuthModule, // for auth ( authentication, authorizaiont guard )
+    SharedModule, // global module ( use it in whole module )
     //* resolver
     UserModule,
     PostModule,
@@ -32,7 +33,6 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     LikeModule,
   ],
   controllers: [HealthController],
-  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

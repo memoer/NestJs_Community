@@ -4,12 +4,12 @@ import {
   Inject,
   ConflictException,
 } from '@nestjs/common';
-import { SuccessOutput } from '~/_shared/dtos/output.dto';
 import { User } from '@prisma/client';
-import { CreateLikeInputArgs, DeleteLikeInputArgs } from './dtos/intput.dto';
+import { SuccessOutput } from '~/_shared/dtos/output.dto';
 import { PrismaService } from '~/_database/database.service';
 import { SharedService } from '~/_shared/shared.service';
 import databaseErrorCode, { DB_PROVIDE } from '~/_database/database.errorCode';
+import { CreateLikeInputArgs, DeleteLikeInputArgs } from './dtos/intput.dto';
 
 @Injectable()
 export class LikeService {

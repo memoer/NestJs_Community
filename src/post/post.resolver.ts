@@ -1,14 +1,14 @@
 import { Resolver, Mutation, Query, Args, ResolveField, Int, Parent } from '@nestjs/graphql';
 import { Post, User } from '@prisma/client';
-import { PostService } from './post.service';
 import { Roles } from '~/auth/roles.decorator';
 import { GetUser } from '~/auth/user.decorator';
-import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
-import { PostModel } from './models/post.model';
 import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
-import { GetPostListOutputGql, PostWithoutAuthorOutputGql } from './dtos/output.dto';
 import { GetListOutput, SuccessOutput } from '~/_shared/dtos/output.dto';
 import { CheckModelOf } from '~/auth/checkModelGuard.decorator';
+import { PostService } from './post.service';
+import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
+import { PostModel } from './models/post.model';
+import { GetPostListOutputGql, PostWithoutAuthorOutputGql } from './dtos/output.dto';
 
 @Resolver(of => PostModel)
 export class PostResolver {

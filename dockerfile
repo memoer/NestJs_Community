@@ -1,7 +1,7 @@
 FROM postgres:latest
 
-ENV POSTGRES_DB=test-db
-ENV POSTGRES_USER=test
+ENV POSTGRES_DB=hakhak-comunity
+ENV POSTGRES_USER=hakhak
 ENV POSTGRES_PASSWORD=q1w2e3
 
 EXPOSE 5432

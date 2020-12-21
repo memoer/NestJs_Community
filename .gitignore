@@ -117,3 +117,5 @@ dist
 .pnp.*
 node_modules
 
+database
+redis

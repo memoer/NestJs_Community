@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { Prisma, Subset, FindManyPostArgs } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
 import { GetListOutput } from './dtos/output.dto';
 interface GetFindManyParams<I> {
@@ -8,7 +8,7 @@ interface GetFindManyParams<I> {
   page?: number;
   take?: number;
   include?: I;
-  where?: Subset<FindManyPostArgs, FindManyPostArgs>['where'];
+  where?: Record<string, string | number>;
 }
 
 @Injectable()

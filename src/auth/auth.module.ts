@@ -1,16 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { GlobalGuard } from './global.guard';
+import { AuthService } from './auth.service';
+import { JwtModule } from '~/jwt/jwt.module';
 
+@Global()
 @Module({
+  imports: [JwtModule],
   providers: [
     {
       // global guard
-      // SharedGuard에서 DI가 가능
-      // main.ts 에서 useGlobalGuards를 사용할 경우, SharedGuard에서 DI가 불가능하다.
       provide: APP_GUARD,
       useClass: GlobalGuard,
     },
+    AuthService,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Comment" ALTER COLUMN "tags" SET DATA TYPE TEXT;
