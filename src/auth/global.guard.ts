@@ -1,24 +1,24 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
+import { META_DATA } from '~/_shared/shared.constants';
+import { ReturnedContext } from '~/_graphql/graphql.factory';
 import { AllowedRoles } from './roles.decorator';
-import sharedConstants from '~/_shared/shared.constants';
-import { GqlContext } from '~/_graphql/graphql.factory';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class GlobalGuard implements CanActivate {
-  constructor(private readonly _reflector: Reflector) {}
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+  constructor(private readonly _reflector: Reflector, private readonly _authService: AuthService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const {
       KEY: { ROLES },
       VALUE: { ANY },
-    } = sharedConstants.META_DATA;
+    } = META_DATA;
     const roles = this._reflector.get<AllowedRoles>(ROLES, context.getHandler());
     // public
     if (!roles) return true;
-    const gqlCtx = GqlExecutionContext.create(context).getContext<GqlContext>();
-    const { user } = gqlCtx;
+    const gqlCtx = GqlExecutionContext.create(context).getContext<ReturnedContext>();
+    const user = await this._authService.getUser(gqlCtx);
     // should login
     if (!user) return false;
     if (roles.includes(ANY)) return true;

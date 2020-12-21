@@ -1,12 +1,27 @@
 import { GqlModuleOptions } from '@nestjs/graphql';
 import { ConfigType } from '@nestjs/config';
 import { join } from 'path';
-import appConfig from '~/_config/app.config';
-import { CustomRequest } from '~/jwt/jwt.middleware';
+import { Request } from 'express';
 import { User } from '@prisma/client';
+import appConfig from '~/_config/app.config';
+import { JWT_HEADER_NAME } from '~/jwt/jwt.constants';
 
-export interface GqlContext {
+interface ContextRequest {
   user: User;
+}
+
+interface ContextConnection {
+  context: Record<typeof JWT_HEADER_NAME, string>;
+}
+
+export interface ContextParams {
+  req: ContextRequest & Request;
+  connection: ContextConnection;
+}
+
+export interface ReturnedContext {
+  user: User;
+  token: string;
 }
 
 export default (appOptions: ConfigType<typeof appConfig>): GqlModuleOptions => {
@@ -17,7 +32,15 @@ export default (appOptions: ConfigType<typeof appConfig>): GqlModuleOptions => {
     sortSchema: true,
     playground: !isProd,
     debug: !isProd,
-    context: ({ req }: { req: CustomRequest }) => ({ user: req.user }),
+    context: ({ req, connection }: ContextParams) => {
+      if (req) {
+        // HTTP conection
+        return { user: req.user };
+      }
+      // WS connection
+      return { token: connection.context.authorization };
+    },
+    installSubscriptionHandlers: true,
   };
   if (!isProd) {
     options.autoSchemaFile = join(process.cwd(), 'src/schema.gql');

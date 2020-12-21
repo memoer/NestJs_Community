@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
 import { UserModel } from '~/user/models/user.model';
 import { CommentModel } from '~/comment/models/comment.models';
 import {
@@ -13,7 +13,8 @@ import {
 import { Type } from 'class-transformer';
 import { Post } from '@prisma/client';
 
-@ObjectType()
+@InputType('PostModelInputType', { isAbstract: true })
+@ObjectType('PostModelObjectType')
 export class PostModel implements Post {
   @Field(type => Int)
   @IsNumber()

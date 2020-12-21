@@ -9,11 +9,10 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": true,
     "paths": {
-      "~/*": ["./src/*"],
-      "pc/*": ["./generated/prisma-client/*"]
+      "~/*": ["./*"]
     }
   }
 }

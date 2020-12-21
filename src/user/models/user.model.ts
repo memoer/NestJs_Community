@@ -9,8 +9,8 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PostModel } from '~/post/models/post.model';
 import { User } from '@prisma/client';
+import { PostModel } from '~/post/models/post.model';
 
 export enum UserRole {
   STUDENT = 'STUDENT',

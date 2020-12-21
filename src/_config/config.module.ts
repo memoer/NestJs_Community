@@ -3,6 +3,7 @@ import * as Joi from '@hapi/joi';
 import appConfig, { appSchema } from './app.config';
 
 export const MyConfigModule = ConfigModule.forRoot({
+  isGlobal: true,
   envFilePath: `.env.${process.env.NODE_ENV}`,
   ignoreEnvFile: process.env.NODE_ENV === 'production',
   load: [appConfig],

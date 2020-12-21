@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '~/_database/database.service';
 import { Post, User, Prisma } from '@prisma/client';
-import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
+import { PrismaService } from '~/_database/database.service';
 import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
 import { SharedService } from '~/_shared/shared.service';
 import { GetListOutput, SuccessOutput } from '~/_shared/dtos/output.dto';
+import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
 
 @Injectable()
 export class PostService {
@@ -34,7 +34,7 @@ export class PostService {
   }
 
   async getPostOne({ id, include }: GetOneIncludeArgs): Promise<Post> {
-    return this._prismaService.post.findOne({
+    return this._prismaService.post.findUnique({
       where: { id },
       ...this._getIncludeObject(include),
     });
@@ -52,11 +52,7 @@ export class PostService {
     return this._prismaService.post.create({
       data: {
         ...args,
-        author: {
-          connect: {
-            id: user.id,
-          },
-        },
+        author: { connect: { id: user.id } },
       },
     });
   }

@@ -3,9 +3,9 @@ import { User } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
 import { JwtService } from '~/jwt/jwt.service';
 import { SharedService } from '~/_shared/shared.service';
-import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 import { PaginatedArgs, GetOneIncludeArgs } from '~/_shared/dtos/input.dto';
 import { SuccessOutput, GetListOutput } from '~/_shared/dtos/output.dto';
+import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 
 @Injectable()
 export class UserService {
