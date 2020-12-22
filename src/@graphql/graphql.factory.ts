@@ -3,8 +3,8 @@ import { ConfigType } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { join } from 'path';
 import { Request } from 'express';
-import appConfig from '~/_config/app.config';
-import { JWT_HEADER_NAME } from '~/_jwt/jwt.constants';
+import appConfig from '~/@config/app.config';
+import { JWT_HEADER_NAME } from '~/@jwt/jwt.constants';
 
 interface ContextRequest {
   user: User;

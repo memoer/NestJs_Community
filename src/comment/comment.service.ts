@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { User, Comment } from '@prisma/client';
-import { PrismaService } from '~/_database/database.service';
-import { GetListOutput } from '~/_shared/dtos/output.dto';
-import { GetOneArgs } from '~/_shared/dtos/input.dto';
+import { PrismaService } from '~/@database/database.service';
+import { GetListOutput } from '~/@shared/dtos/output.dto';
+import { GetOneArgs } from '~/@shared/dtos/input.dto';
 import {
   CreateCommentArgs,
   GetCommentOfPostArgs,
@@ -21,7 +21,7 @@ export class CommentService {
     return parentComment.postId;
   }
 
-  _transformTags(tags?: number[]) {
+  private _transformTags(tags?: number[]) {
     if (!tags) return undefined;
     return tags.join('/');
   }

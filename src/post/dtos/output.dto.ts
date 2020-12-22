@@ -1,5 +1,5 @@
 import { ObjectType, OmitType } from '@nestjs/graphql';
-import { getListOutput } from '~/_shared/dtos/output.dto';
+import { getListOutput } from '~/@shared/dtos/output.dto';
 import { PostModel } from '../models/post.model';
 
 @ObjectType()

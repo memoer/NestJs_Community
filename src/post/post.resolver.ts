@@ -1,10 +1,10 @@
 import { Resolver, Mutation, Query, Args, ResolveField, Int, Parent } from '@nestjs/graphql';
 import { Post, User } from '@prisma/client';
-import { Roles } from '~/_auth/roles.decorator';
-import { GetUser } from '~/_auth/user.decorator';
-import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
-import { GetListOutput } from '~/_shared/dtos/output.dto';
-import { CheckModelOf } from '~/_auth/checkModelGuard.decorator';
+import { Roles } from '~/@auth/roles.decorator';
+import { GetUser } from '~/@auth/user.decorator';
+import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/@shared/dtos/input.dto';
+import { GetListOutput } from '~/@shared/dtos/output.dto';
+import { CheckModelOf } from '~/@auth/checkModelGuard.decorator';
 import { PostService } from './post.service';
 import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
 import { PostModel } from './models/post.model';

@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '~/_jwt/jwt.module';
+import { JwtModule } from '~/@jwt/jwt.module';
 import { GlobalGuard } from './global.guard';
 import { AuthService } from './auth.service';
 

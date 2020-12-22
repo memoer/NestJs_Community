@@ -1,2 +1,0 @@
-export const PROVIDE_PUB_SUB = 'PUB_SUB';
-export const PROVIDE_SUBSRCIPTIONS = 'SUBSCRIPTIONS';

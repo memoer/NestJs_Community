@@ -1,26 +1,24 @@
 import { Resolver, Mutation, Query, Args, Subscription } from '@nestjs/graphql';
-import { Inject } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { GetUser } from '~/_auth/user.decorator';
-import { Roles } from '~/_auth/roles.decorator';
-import { PaginatedArgs, IncludeArgs, GetOneIncludeArgs } from '~/_shared/dtos/input.dto';
-import { GetListOutput } from '~/_shared/dtos/output.dto';
-import { PROVIDE_PUB_SUB, PROVIDE_SUBSRCIPTIONS } from '~/_pubsub/pubsub.constants';
-import { ProvideSubscriptions } from '~/_pubsub/pubsub.module';
-import { ReturnedContext } from '~/_graphql/graphql.factory';
-import { compareWithCtxUser } from '~/$lib/subscription';
+import { GetUser } from '~/@auth/user.decorator';
+import { Roles } from '~/@auth/roles.decorator';
+import { PaginatedArgs, IncludeArgs, GetOneIncludeArgs } from '~/@shared/dtos/input.dto';
+import { GetListOutput } from '~/@shared/dtos/output.dto';
+import { ReturnedContext } from '~/@graphql/graphql.factory';
+import { compareWithCtxUser } from '~/$lib/utils';
 import { UserModel } from './models/user.model';
 import { UserService } from './user.service';
 import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 import { GetUserListOutputGql, NotifyToUserOutputGql } from './dtos/output.dto';
+import { PubsubService } from '~/@pubsub/pubsub.service';
+import { NotifyToUserPayload } from './user.interface';
+import { notifyToUserResolve } from './lib/utils';
 
 @Resolver(of => UserModel)
 export class UserResolver {
   constructor(
-    @Inject(PROVIDE_PUB_SUB) private readonly _pubsub: RedisPubSub,
-    @Inject(PROVIDE_SUBSRCIPTIONS) private readonly _pubsubSubscription: ProvideSubscriptions,
     private readonly _userService: UserService,
+    private readonly _pubsubService: PubsubService,
   ) {}
 
   @Query(returns => String)
@@ -62,15 +60,14 @@ export class UserResolver {
   }
 
   @Subscription(returns => NotifyToUserOutputGql, {
-    filter: (payload, _, ctx: ReturnedContext) => {
-      const {
-        notifyToUser: { userId },
-      } = payload;
-      return compareWithCtxUser(userId, ctx);
-    },
+    filter: ({ notifyToUser }: NotifyToUserPayload, _, ctx: ReturnedContext) =>
+      compareWithCtxUser(notifyToUser.userIdList, ctx),
+    resolve: notifyToUserResolve,
   })
   @Roles('ANY')
   notifyToUser() {
-    return this._pubsub.asyncIterator(this._pubsubSubscription.NOTIFY_TO_USER.TIGGIER);
+    return this._pubsubService
+      .getPubsub()
+      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER);
   }
 }

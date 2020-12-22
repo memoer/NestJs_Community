@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Post, User, Prisma } from '@prisma/client';
-import { PrismaService } from '~/_database/database.service';
-import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
-import { SharedService } from '~/_shared/shared.service';
-import { GetListOutput } from '~/_shared/dtos/output.dto';
+import { PrismaService } from '~/@database/database.service';
+import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/@shared/dtos/input.dto';
+import { SharedService } from '~/@shared/shared.service';
+import { GetListOutput } from '~/@shared/dtos/output.dto';
 import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
 
 @Injectable()

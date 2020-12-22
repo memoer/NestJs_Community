@@ -5,8 +5,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { PrismaService } from '~/_database/database.service';
-import databaseErrorCode, { DB_PROVIDE } from '~/_database/database.errorCode';
+import { PrismaService } from '~/@database/database.service';
+import databaseErrorCode, { DB_PROVIDE } from '~/@database/database.errorCode';
 import { CreateLikeInputArgs, DeleteLikeInputArgs } from './dtos/intput.dto';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { GraphQLModule } from '@nestjs/graphql';
-import appConfig from '~/_config/app.config';
+import appConfig from '~/@config/app.config';
 import graphqlFactory from './graphql.factory';
 
 export const MyGraphQLModule = GraphQLModule.forRootAsync({

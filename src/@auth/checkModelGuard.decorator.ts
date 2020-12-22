@@ -9,9 +9,9 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '~/_database/database.service';
-import { META_DATA } from '~/_shared/shared.constants';
-import { ReturnedContext } from '~/_graphql/graphql.factory';
+import { PrismaService } from '~/@database/database.service';
+import { META_DATA } from '~/@shared/shared.constants';
+import { ReturnedContext } from '~/@graphql/graphql.factory';
 import { AuthService } from './auth.service';
 
 type WhatCheck = 'MINE' | 'EXISTS';

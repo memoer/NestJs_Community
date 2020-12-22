@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { ContextParams } from '~/_graphql/graphql.factory';
+import { ContextParams } from '~/@graphql/graphql.factory';
 import { JWT_HEADER_NAME } from './jwt.constants';
 import { JwtService } from './jwt.service';
 

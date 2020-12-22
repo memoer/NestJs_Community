@@ -1,7 +1,7 @@
 import { PickType, ArgsType, Field, Int, PartialType, InputType } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 import { IsOptional, IsArray, IsNumber, IsPositive, IsBoolean } from 'class-validator';
-import { PaginatedArgs } from '~/_shared/dtos/input.dto';
+import { PaginatedArgs } from '~/@shared/dtos/input.dto';
 import { CommentModel } from '../models/comment.models';
 
 @InputType('CommentIncludeInputType')

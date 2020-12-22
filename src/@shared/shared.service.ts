@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable, ExecutionContext, NotFoundException } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from '~/_database/database.service';
+import { PrismaService } from '~/@database/database.service';
+import { ReturnedContext } from '~/@graphql/graphql.factory';
 import { GetListOutput } from './dtos/output.dto';
 interface GetFindManyParams<I> {
   model: Prisma.ModelName;
@@ -17,16 +19,19 @@ export class SharedService {
 
   constructor(private readonly _prismaService: PrismaService) {}
 
-  public generateHash(plainString: string): Promise<string> {
+  generateHash(plainString: string): Promise<string> {
     return bcrypt.hash(plainString, this._saltOrRounds);
   }
-  public comapreHashWithPlain(plainString: string, hash: string): boolean {
+
+  comapreHashWithPlain(plainString: string, hash: string): boolean {
     return bcrypt.compareSync(plainString, hash);
   }
-  public getSkip({ page, take }: { page: number; take: number }): number {
+
+  getSkip({ page, take }: { page: number; take: number }): number {
     return (page - 1) * take;
   }
-  public async getFindMany<R, I = undefined>({
+
+  async getFindMany<R, I = undefined>({
     model,
     page,
     include,
@@ -40,5 +45,12 @@ export class SharedService {
     });
     const count = await this._prismaService[lowerModel].count();
     return { data, count, page: page, take: options.take };
+  }
+
+  getMyInfo(context: ExecutionContext): User {
+    const me = GqlExecutionContext.create(context).getContext<ReturnedContext>().user;
+    if (!me)
+      throw new NotFoundException('[pubsub.interceptor]_getMyInfo: user(me) not found Error');
+    return me;
   }
 }

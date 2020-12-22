@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { PrismaService } from '~/_database/database.service';
-import { JwtService } from '~/_jwt/jwt.service';
-import { SharedService } from '~/_shared/shared.service';
-import { PaginatedArgs, GetOneIncludeArgs } from '~/_shared/dtos/input.dto';
-import { GetListOutput } from '~/_shared/dtos/output.dto';
+import { PrismaService } from '~/@database/database.service';
+import { JwtService } from '~/@jwt/jwt.service';
+import { SharedService } from '~/@shared/shared.service';
+import { PaginatedArgs, GetOneIncludeArgs } from '~/@shared/dtos/input.dto';
+import { GetListOutput } from '~/@shared/dtos/output.dto';
 import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 
 @Injectable()

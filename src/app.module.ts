@@ -1,32 +1,35 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { MyConfigModule } from './_config/config.module';
-import { PrismaModule } from './_database/database.module';
-import { MyGraphQLModule } from './_graphql/graphql.module';
-import { SharedModule } from './_shared/shared.module';
-import { HealthController } from './_health/health.controller';
-import { UserModule } from './user/user.module';
-import { PostModule } from './post/post.module';
+import { MyConfigModule } from './@config/config.module';
+import { PrismaModule } from './@database/database.module';
+import { MyGraphQLModule } from './@graphql/graphql.module';
+import { SharedModule } from './@shared/shared.module';
+import { AuthModule } from './@auth/auth.module';
+import { JwtModule } from './@jwt/jwt.module';
+import { JwtMiddleware } from './@jwt/jwt.middleware';
+import { PubsubModule } from './@pubsub/pubsub.module';
+import { HealthController } from './health/health.controller';
 import { CommentModule } from './comment/comment.module';
 import { LikeModule } from './like/like.module';
-import { AuthModule } from './_auth/auth.module';
-import { JwtModule } from './_jwt/jwt.module';
-import { JwtMiddleware } from './_jwt/jwt.middleware';
-import { PubsubModule } from './_pubsub/pubsub.module';
+import { PostModule } from './post/post.module';
+import { UserModule } from './user/user.module';
+import { MessageModule } from './#message/message.module';
 
 @Module({
   imports: [
-    //! essential module
+    //! essential
     MyGraphQLModule, // for graphql
     TerminusModule, // for healthcheck
     PubsubModule, // for subscription
     JwtModule, // for jwt
-    //! global module
+    //! global
     AuthModule, // for auth ( authentication, authorizaiont guard )
     MyConfigModule, // for app env
     PrismaModule, // for database
     SharedModule, // for other resolver
-    //* resolver
+    //* util module
+    MessageModule,
+    //* module with grapqhl query ( with resolver )
     CommentModule,
     LikeModule,
     PostModule,

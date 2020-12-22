@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Reflector } from '@nestjs/core';
-import { META_DATA } from '~/_shared/shared.constants';
-import { ReturnedContext } from '~/_graphql/graphql.factory';
+import { META_DATA } from '~/@shared/shared.constants';
+import { ReturnedContext } from '~/@graphql/graphql.factory';
 import { AllowedRoles } from './roles.decorator';
 import { AuthService } from './auth.service';
 

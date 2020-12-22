@@ -1,6 +1,6 @@
 import { ObjectType, Int, Field } from '@nestjs/graphql';
-import { IsNumber, IsPositive, IsString } from 'class-validator';
-import { getListOutput } from '~/_shared/dtos/output.dto';
+import { IsNumber, IsString, IsPositive } from 'class-validator';
+import { getListOutput } from '~/@shared/dtos/output.dto';
 import { UserModel } from '../models/user.model';
 
 @ObjectType()

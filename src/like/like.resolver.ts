@@ -1,12 +1,13 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { User } from '@prisma/client';
-import { GetUser } from '~/_auth/user.decorator';
-import { CheckModelOf } from '~/_auth/checkModelGuard.decorator';
-import { NotifyToUserAbout } from '~/_pubsub/pubsub.interceptor';
-import { Roles } from '~/_auth/roles.decorator';
+import { GetUser } from '~/@auth/user.decorator';
+import { CheckModelOf } from '~/@auth/checkModelGuard.decorator';
+import { Roles } from '~/@auth/roles.decorator';
 import { LikeService } from './like.service';
 import { CreateLikeInputArgs, DeleteLikeInputArgs } from './dtos/intput.dto';
 import { LikeModel } from './models/like.model';
+import { UseInterceptors } from '@nestjs/common';
+import { LikeInterceptor } from './like.interceptor';
 
 @Resolver(of => LikeModel)
 export class LikeResolver {
@@ -15,7 +16,7 @@ export class LikeResolver {
   @Mutation(returns => Boolean)
   @CheckModelOf('Post', 'EXISTS', 'postId')
   @Roles('ANY')
-  @NotifyToUserAbout('LIKE')
+  @UseInterceptors(LikeInterceptor)
   createLike(@GetUser() user: User, @Args() args: CreateLikeInputArgs): Promise<boolean> {
     return this._likeService.createLike(user, args);
   }
