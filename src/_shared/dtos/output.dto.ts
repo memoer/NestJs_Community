@@ -14,11 +14,6 @@ export function getOutputGql<T>(classRef: Type<T> | Type<T>[]): any {
   }
   return A;
 }
-@ObjectType()
-export class SuccessOutput {
-  @Field(type => Boolean)
-  ok: boolean;
-}
 
 export interface GetListOutput<T> {
   data: T[];

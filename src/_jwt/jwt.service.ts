@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { ConfigType } from '@nestjs/config';
+import { User } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import appConfig from '~/_config/app.config';
 import { PrismaService } from '~/_database/database.service';

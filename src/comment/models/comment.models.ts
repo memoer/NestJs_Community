@@ -67,15 +67,13 @@ export class CommentModel implements Comment {
   @ValidateNested()
   author: UserModel;
 
-  @Field(type => Int, { nullable: true })
+  @Field(type => Int)
   @IsNumber()
   @IsPositive()
-  @IsOptional()
   postId: number | null;
 
-  @Field(type => PostModel, { nullable: true })
+  @Field(type => PostModel)
   @ValidateNested()
-  @IsOptional()
   post: PostModel;
 
   @Field(type => String, { nullable: true })

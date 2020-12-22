@@ -1,13 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { User, Comment } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
-import { SuccessOutput, GetListOutput } from '~/_shared/dtos/output.dto';
+import { GetListOutput } from '~/_shared/dtos/output.dto';
 import { GetOneArgs } from '~/_shared/dtos/input.dto';
-import { CreateCommentArgs, GetCommentOfPostArgs, UpdateCommentArgs } from './dtos/input.dto';
+import {
+  CreateCommentArgs,
+  GetCommentOfPostArgs,
+  UpdateCommentArgs,
+  CreateChildCommentArgs,
+} from './dtos/input.dto';
 
 @Injectable()
 export class CommentService {
   constructor(private readonly _prismaService: PrismaService) {}
+
+  private async _getPostIdOfParentComment(parentId: number): Promise<number> {
+    const parentComment = await this._prismaService.comment.findUnique({
+      where: { id: parentId },
+    });
+    return parentComment.postId;
+  }
+
+  _transformTags(tags?: number[]) {
+    if (!tags) return undefined;
+    return tags.join('/');
+  }
+
   async getCommentOfPost({
     postId,
     ...args
@@ -15,7 +33,7 @@ export class CommentService {
     const { take, page, include } = args;
     const skip = (page - 1) * take;
     const data = await this._prismaService.comment.findMany({
-      where: { postId },
+      where: { postId, commentId: null },
       include,
       skip,
     });
@@ -23,25 +41,33 @@ export class CommentService {
     return { data, count, page, take };
   }
 
-  async createComment(
-    user: User,
-    { postId, content, tags, commentId }: CreateCommentArgs,
-  ): Promise<Comment> {
+  async createComment(user: User, { content, tags, postId }: CreateCommentArgs): Promise<Comment> {
     return this._prismaService.comment.create({
       data: {
         content,
+        tags: this._transformTags(tags),
         author: { connect: { id: user.id } },
-        tags: tags ? tags.join('/') : undefined,
-        ...(commentId
-          ? { Comment: { connect: { id: commentId } } }
-          : { post: { connect: { id: postId } } }),
+        post: { connect: { id: postId } },
       },
     });
   }
 
-  async deleteComment({ id }: GetOneArgs): Promise<SuccessOutput> {
+  async createChildComment(user: User, { content, tags, parentId }: CreateChildCommentArgs) {
+    const postId = await this._getPostIdOfParentComment(parentId);
+    return this._prismaService.comment.create({
+      data: {
+        content,
+        tags: this._transformTags(tags),
+        author: { connect: { id: user.id } },
+        post: { connect: { id: postId } },
+        Comment: { connect: { id: parentId } },
+      },
+    });
+  }
+
+  async deleteComment({ id }: GetOneArgs): Promise<boolean> {
     await this._prismaService.comment.delete({ where: { id } });
-    return { ok: true };
+    return true;
   }
 
   async updateComment({ id, ...args }: UpdateCommentArgs): Promise<Comment> {

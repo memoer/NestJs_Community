@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '~/jwt/jwt.module';
+import { JwtModule } from '~/_jwt/jwt.module';
+import { PubsubModule } from '~/_pubsub/pubsub.module';
 import { UserService } from './user.service';
 import { UserResolver } from './user.resolver';
-import { PubsubModule } from '~/_pubsub/pubsub.module';
 
 @Module({
   imports: [JwtModule, PubsubModule],

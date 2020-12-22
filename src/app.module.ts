@@ -9,9 +9,9 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
 import { LikeModule } from './like/like.module';
-import { AuthModule } from './auth/auth.module';
-import { JwtModule } from './jwt/jwt.module';
-import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AuthModule } from './_auth/auth.module';
+import { JwtModule } from './_jwt/jwt.module';
+import { JwtMiddleware } from './_jwt/jwt.middleware';
 import { PubsubModule } from './_pubsub/pubsub.module';
 
 @Module({
@@ -22,15 +22,15 @@ import { PubsubModule } from './_pubsub/pubsub.module';
     PubsubModule, // for subscription
     JwtModule, // for jwt
     //! global module
+    AuthModule, // for auth ( authentication, authorizaiont guard )
     MyConfigModule, // for app env
     PrismaModule, // for database
-    AuthModule, // for auth ( authentication, authorizaiont guard )
-    SharedModule, // global module ( use it in whole module )
+    SharedModule, // for other resolver
     //* resolver
-    UserModule,
-    PostModule,
     CommentModule,
     LikeModule,
+    PostModule,
+    UserModule,
   ],
   controllers: [HealthController],
 })

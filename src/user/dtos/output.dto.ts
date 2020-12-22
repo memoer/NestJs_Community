@@ -1,7 +1,7 @@
 import { ObjectType, Int, Field } from '@nestjs/graphql';
+import { IsNumber, IsPositive, IsString } from 'class-validator';
 import { getListOutput } from '~/_shared/dtos/output.dto';
 import { UserModel } from '../models/user.model';
-import { IsNumber, IsPositive, IsString } from 'class-validator';
 
 @ObjectType()
 export class GetUserListOutputGql extends getListOutput(UserModel) {}

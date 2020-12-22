@@ -5,10 +5,10 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
 import { META_DATA } from '~/_shared/shared.constants';
 import { ReturnedContext } from '~/_graphql/graphql.factory';
@@ -31,7 +31,7 @@ export class CheckModelGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { KEY } = META_DATA;
     const gqlCtx = GqlExecutionContext.create(context).getContext<ReturnedContext>();
-    const { WHAT_MODEL, KEY_NAME_TO_CHECK, WHAT_CHECK } = Object.keys(KEY).reduce((obj, key) => {
+    const { WHAT_MODEL, WHAT_CHECK, KEY_NAME_TO_CHECK } = Object.keys(KEY).reduce((obj, key) => {
       const value = this._reflector.get(key, context.getHandler());
       obj[key] = value;
       return obj;

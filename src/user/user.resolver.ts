@@ -1,25 +1,26 @@
 import { Resolver, Mutation, Query, Args, Subscription } from '@nestjs/graphql';
+import { Inject } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { GetUser } from '~/auth/user.decorator';
-import { Roles } from '~/auth/roles.decorator';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { GetUser } from '~/_auth/user.decorator';
+import { Roles } from '~/_auth/roles.decorator';
 import { PaginatedArgs, IncludeArgs, GetOneIncludeArgs } from '~/_shared/dtos/input.dto';
-import { SuccessOutput, GetListOutput } from '~/_shared/dtos/output.dto';
+import { GetListOutput } from '~/_shared/dtos/output.dto';
+import { PROVIDE_PUB_SUB, PROVIDE_SUBSRCIPTIONS } from '~/_pubsub/pubsub.constants';
+import { ProvideSubscriptions } from '~/_pubsub/pubsub.module';
+import { ReturnedContext } from '~/_graphql/graphql.factory';
+import { compareWithCtxUser } from '~/$lib/subscription';
 import { UserModel } from './models/user.model';
 import { UserService } from './user.service';
 import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 import { GetUserListOutputGql, NotifyToUserOutputGql } from './dtos/output.dto';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { Inject } from '@nestjs/common';
-import { PROVIDE_PUB_SUB, PROVIDE_SUBSRCIPTIONS } from '~/_pubsub/pubsub.constants';
-import { ProvideSubscriptions } from '~/_pubsub/pubsub.module';
-import { ReturnedContext } from '~/_graphql/graphql.factory';
 
 @Resolver(of => UserModel)
 export class UserResolver {
   constructor(
-    private readonly _userService: UserService,
     @Inject(PROVIDE_PUB_SUB) private readonly _pubsub: RedisPubSub,
     @Inject(PROVIDE_SUBSRCIPTIONS) private readonly _pubsubSubscription: ProvideSubscriptions,
+    private readonly _userService: UserService,
   ) {}
 
   @Query(returns => String)
@@ -48,9 +49,9 @@ export class UserResolver {
     return this._userService.createUser(args);
   }
 
-  @Mutation(returns => SuccessOutput)
+  @Mutation(returns => Boolean)
   @Roles('ANY')
-  deleteUser(@GetUser() user: User): Promise<SuccessOutput> {
+  deleteUser(@GetUser() user: User): Promise<boolean> {
     return this._userService.deleteUser(user);
   }
 
@@ -65,15 +66,11 @@ export class UserResolver {
       const {
         notifyToUser: { userId },
       } = payload;
-      const {
-        user: { id },
-      } = ctx;
-      console.log(userId, id);
-      return userId === id;
+      return compareWithCtxUser(userId, ctx);
     },
   })
   @Roles('ANY')
-  notifyToUser(@GetUser() user: User) {
+  notifyToUser() {
     return this._pubsub.asyncIterator(this._pubsubSubscription.NOTIFY_TO_USER.TIGGIER);
   }
 }

@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { IsNumber, ValidateNested, IsPositive } from 'class-validator';
 import { Like } from '@prisma/client';
+import { IsNumber, ValidateNested, IsPositive } from 'class-validator';
 import { UserModel } from '~/user/models/user.model';
 import { PostModel } from '~/post/models/post.model';
 

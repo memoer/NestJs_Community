@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '~/_database/database.service';
 import { GetListOutput } from './dtos/output.dto';
 interface GetFindManyParams<I> {
@@ -16,10 +16,6 @@ export class SharedService {
   private readonly _saltOrRounds = 10;
 
   constructor(private readonly _prismaService: PrismaService) {}
-
-  public successResponse() {
-    return { ok: true };
-  }
 
   public generateHash(plainString: string): Promise<string> {
     return bcrypt.hash(plainString, this._saltOrRounds);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ReturnedContext } from '~/_graphql/graphql.factory';
-import { JwtService } from '~/jwt/jwt.service';
 import { User } from '@prisma/client';
+import { ReturnedContext } from '~/_graphql/graphql.factory';
+import { JwtService } from '~/_jwt/jwt.service';
 
 @Injectable()
 export class AuthService {

@@ -1,4 +1,5 @@
 import { ObjectType, Field, registerEnumType, InputType, Int } from '@nestjs/graphql';
+import { User } from '@prisma/client';
 import {
   IsEnum,
   IsNumber,
@@ -9,7 +10,6 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { User } from '@prisma/client';
 import { PostModel } from '~/post/models/post.model';
 
 export enum UserRole {

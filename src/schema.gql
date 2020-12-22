@@ -24,8 +24,8 @@ type CommentModelObjectType {
   content: String!
   createdAt: DateTime!
   id: Int!
-  post: PostModelObjectType
-  postId: Int
+  post: PostModelObjectType!
+  postId: Int!
   tags: String
 }
 
@@ -56,14 +56,15 @@ type GetUserListOutputGql {
 }
 
 type Mutation {
-  createComment(commentId: Int, content: String!, postId: Int, tags: [Int]): CommentModelObjectType!
-  createLike(postId: Int!): SuccessOutput!
+  createChildComment(content: String!, parentId: Int!, tags: [Int]): CommentModelObjectType!
+  createComment(content: String!, postId: Int!, tags: [Int]): CommentModelObjectType!
+  createLike(postId: Int!): Boolean!
   createPost(content: String!, title: String!): PostWithoutAuthorOutputGql!
   createUser(email: String!, name: String!, password: String!, role: UserRole!): UserModelObjectType!
-  deleteComment(id: Int!): SuccessOutput!
-  deleteLike(id: Int!): SuccessOutput!
-  deletePost(id: Int!): SuccessOutput!
-  deleteUser: SuccessOutput!
+  deleteComment(id: Int!): Boolean!
+  deleteLike(id: Int!): Boolean!
+  deletePost(id: Int!): Boolean!
+  deleteUser: Boolean!
   updateComment(content: String, id: Int!, tags: String): CommentModelObjectType!
   updatePost(content: String, id: Int!, title: String): PostWithoutAuthorOutputGql!
   updateUser(email: String, name: String, password: String, role: UserRole): UserModelObjectType!
@@ -107,10 +108,6 @@ type Query {
 
 type Subscription {
   notifyToUser: NotifyToUserOutputGql!
-}
-
-type SuccessOutput {
-  ok: Boolean!
 }
 
 type UserModelObjectType {

@@ -3,7 +3,7 @@ import { Post, User, Prisma } from '@prisma/client';
 import { PrismaService } from '~/_database/database.service';
 import { PaginatedIncludeArgs, GetOneIncludeArgs, GetOneArgs } from '~/_shared/dtos/input.dto';
 import { SharedService } from '~/_shared/shared.service';
-import { GetListOutput, SuccessOutput } from '~/_shared/dtos/output.dto';
+import { GetListOutput } from '~/_shared/dtos/output.dto';
 import { CreatePostArgs, UpdatePostArgs } from './dtos/input.dto';
 
 @Injectable()
@@ -57,9 +57,9 @@ export class PostService {
     });
   }
 
-  async deletePost({ id }: GetOneArgs): Promise<SuccessOutput> {
+  async deletePost({ id }: GetOneArgs): Promise<boolean> {
     await this._prismaService.post.delete({ where: { id } });
-    return this._sharedService.successResponse();
+    return true;
   }
 
   async updatePost({ id, ...data }: UpdatePostArgs): Promise<Post> {

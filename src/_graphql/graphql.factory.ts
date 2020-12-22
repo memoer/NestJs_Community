@@ -1,10 +1,10 @@
 import { GqlModuleOptions } from '@nestjs/graphql';
 import { ConfigType } from '@nestjs/config';
+import { User } from '@prisma/client';
 import { join } from 'path';
 import { Request } from 'express';
-import { User } from '@prisma/client';
 import appConfig from '~/_config/app.config';
-import { JWT_HEADER_NAME } from '~/jwt/jwt.constants';
+import { JWT_HEADER_NAME } from '~/_jwt/jwt.constants';
 
 interface ContextRequest {
   user: User;
