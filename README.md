@@ -1,9 +1,11 @@
 # File Structure
 
-- Global Module, 앱을 실행시키는 데에 있어서 필수적인 Module -> 모듈 이름 앞에 '@'을 붙인다.
-- Module 이지만 Graphql Query ( resolver를 가지지 않는 ) / util성향이 강한 module -> 이름 앞에 "#"을 붙인다.
-- Nest Module이 아닌 즉, 단순히 import만 이용해서 사용하는 함수들 혹은 클래스에 대한 코드가 위치한 폴더 -> 이름 앞에 '\$'을 붙인다.
-- graphql query ( resolver 를 가진 ) module은 이름 그대로 폴더를 만든다.
+| 파일이름 |                                          의미                                           |
+| -------- | :-------------------------------------------------------------------------------------: |
+| `@ ...`  |               Global Module, 앱을 실행시키는 데에 있어서 필수적인 Module                |
+| `# ...`  |     Module 이지만 Graphql Query ( resolver를 가지지 않는 ) / util성향이 강한 module     |
+| `$ ...`  | Nest Module이 아닌 즉, 단순히 import만 이용해서 사용하는 함수들 혹은 클래스에 대한 폴더 |
+| `...`    |                        graphql query ( resolver 를 가진 ) module                        |
 
 # Core
 
@@ -28,11 +30,16 @@
 # subscription
 
 - [x] 게시물에 좋아요 버튼을 누르면 게시물을 작성한 자에게 subscription
-- [x] 댓글을 달 때, 어떠한 유저를 tag하면 해당 유저에게 subscription
+- [x] 댓글을 달 때, 어떠한 유저를 tag하면 해당 유저에게 subscription ('@' tag를 단 유저들에게만 알림이 날라간다.)
 
 # redis
 
 - redis + notification -> 알람
+- 어떻게 진행해야 하는 거지?
+
+# Post
+
+- [ ] hashtag ( # )
 
 # TDD
 
