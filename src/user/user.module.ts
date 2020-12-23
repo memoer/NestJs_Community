@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 import { UserResolver } from './user.resolver';
 
 @Module({
-  imports: [JwtModule, PubsubModule],
+  imports: [JwtModule, PubsubModule, NotificationModule],
   providers: [UserService, UserResolver],
 })
 export class UserModule {}

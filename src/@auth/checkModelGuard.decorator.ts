@@ -28,6 +28,7 @@ export class CheckModelGuard implements CanActivate {
     private readonly _prismaService: PrismaService,
     private readonly _authService: AuthService,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { KEY } = META_DATA;
     const gqlCtx = GqlExecutionContext.create(context).getContext<ReturnedContext>();
@@ -42,7 +43,6 @@ export class CheckModelGuard implements CanActivate {
     // check whether user logged in
     const user = await this._authService.getUser(gqlCtx);
     if (!user) throw new ForbiddenException('Please Log in'); // require login
-    console.log(MODEL);
     const data = await this._prismaService[MODEL.toLowerCase()].findUnique({
       where: { id: context.getArgs()[1][ARGUMENT_ID_NAME] },
     });
@@ -51,6 +51,7 @@ export class CheckModelGuard implements CanActivate {
     return CHECK_TYPE === 'EXISTS' || user.id === data[CHECK_ID_NAME];
   }
 }
+
 type CheckIdName = Extract<keyof Post, 'authorId'> | Extract<keyof Notification, 'whoId'>;
 export function CheckModelOf(
   model: Prisma.ModelName,
@@ -61,7 +62,6 @@ export function CheckModelOf(
   const {
     KEY: { MODEL, CHECK_TYPE, CHECK_ID_NAME, ARGUMENT_ID_NAME },
   } = META_DATA;
-  console.log(model);
   return applyDecorators(
     SetMetadata(MODEL, model),
     SetMetadata(CHECK_TYPE, checkType),

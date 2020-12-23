@@ -35,7 +35,9 @@
 # Notification
 
 - [x] publish 를 할 경우, notification row 를 생성 -> checked: false
-- [ ] user subscription가 열려있을 경우 -> 해당 notification checked : true
+- [x] user subscription가 열려있을 경우 -> 해당 notification checked : true
+  - 닫혀있을 경우 -> checked 는 false
+  - notifyToUser subscription Then 로직을 탈 경우 checked 가 true 가 된다.
 
 # TDD
 

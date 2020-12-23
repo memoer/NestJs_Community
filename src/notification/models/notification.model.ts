@@ -16,7 +16,7 @@ export class NotificationModel implements Notification {
 
   @Field(type => String)
   @IsString()
-  content: string;
+  message: string;
 
   @Field(type => Boolean)
   @IsBoolean()

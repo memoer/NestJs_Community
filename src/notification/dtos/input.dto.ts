@@ -5,10 +5,10 @@ import { IsNumber, IsPositive } from 'class-validator';
 @ArgsType()
 export class CheckedNotificationArgs extends PickType(NotificationModel, ['id'], ArgsType) {}
 
-export class CreateNotificationParams extends PickType(NotificationModel, ['whoId', 'content']) {}
+export class CreateNotificationParams extends PickType(NotificationModel, ['whoId', 'message']) {}
 
 export class UpdateNotificationParams extends PickType(PartialType(NotificationModel), [
-  'content',
+  'message',
   'checked',
 ]) {
   @IsNumber()

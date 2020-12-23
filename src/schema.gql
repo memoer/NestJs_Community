@@ -78,15 +78,16 @@ type Mutation {
 
 type NotificationModel {
   checked: Boolean!
-  content: String!
   createdAt: DateTime!
   id: Int!
+  message: String!
   whoId: Int!
 }
 
 type NotifyToUserOutputGql {
+  id: Int!
   message: String!
-  userId: Int!
+  notificationId: Int!
 }
 
 type PostModelObjectType {

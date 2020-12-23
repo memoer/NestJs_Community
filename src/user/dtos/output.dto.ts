@@ -11,7 +11,12 @@ export class NotifyToUserOutputGql {
   @Field(type => Int)
   @IsNumber()
   @IsPositive()
-  userId: number;
+  id: number;
+
+  @Field(type => Int)
+  @IsNumber()
+  @IsPositive()
+  notificationId;
 
   @Field(type => String)
   @IsString()

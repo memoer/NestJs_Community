@@ -63,7 +63,7 @@ model Like {
 model Notification {
   id        Int      @id @default(autoincrement())
   whoId     Int
-  content   String
+  message   String
   checked   Boolean
   createdAt DateTime @default(now())
   who       User     @relation(fields: [whoId], references: [id])

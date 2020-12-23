@@ -26,9 +26,9 @@ export class NotificationService {
     });
   }
 
-  async createNotification({ whoId, content }: CreateNotificationParams): Promise<Notification> {
+  async createNotification({ whoId, message }: CreateNotificationParams): Promise<Notification> {
     return this._prismaService.notification.create({
-      data: { content, checked: false, who: { connect: { id: whoId } } },
+      data: { message, checked: false, who: { connect: { id: whoId } } },
     });
   }
 

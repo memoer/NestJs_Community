@@ -13,21 +13,21 @@ import { GetUser } from '~/@auth/user.decorator';
 import { Roles } from '~/@auth/roles.decorator';
 import { PaginatedArgs, IncludeArgs, GetOneIncludeArgs } from '~/@shared/dtos/input.dto';
 import { GetListOutput } from '~/@shared/dtos/output.dto';
-import { ReturnedContext } from '~/@graphql/graphql.factory';
-import { compareWithCtxUser } from '~/$lib/utils';
 import { UserModel } from './models/user.model';
 import { UserService } from './user.service';
 import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 import { GetUserListOutputGql, NotifyToUserOutputGql } from './dtos/output.dto';
 import { PubsubService } from '~/@pubsub/pubsub.service';
 import { NotifyToUserPayload } from './user.interface';
-import { notifyToUserResolve } from './lib/utils';
+import { notifyToUserResolve, notifyToUserFilter } from './lib/utils';
+import { NotificationService } from '~/notification/notification.service';
 
 @Resolver(of => UserModel)
 export class UserResolver {
   constructor(
     private readonly _userService: UserService,
     private readonly _pubsubService: PubsubService,
+    private readonly _notificationService: NotificationService,
   ) {}
 
   @ResolveField(type => Int)
@@ -74,15 +74,20 @@ export class UserResolver {
   }
 
   @Subscription(returns => NotifyToUserOutputGql, {
-    filter: ({ notifyToUser }: NotifyToUserPayload, _, ctx: ReturnedContext) =>
-      compareWithCtxUser(notifyToUser.userIdList, ctx),
-    resolve: notifyToUserResolve,
+    filter: notifyToUserFilter,
   })
   @Roles('ANY')
-  notifyToUser(@Parent() data: any) {
-    console.log(data);
+  notifyToUser(@GetUser() user: User) {
     return this._pubsubService
       .getPubsub()
-      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER);
+      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER)
+      .next()
+      .then(({ value }: { value: NotifyToUserPayload }) => {
+        const { info } = value.notifyToUser;
+        const myInfo = Array.isArray(info) ? info.find(v => v.id === user.id) : info;
+        // checked -> true
+        this._notificationService.checkedNotification({ id: myInfo.notificationId });
+        return notifyToUserResolve(value, user);
+      });
   }
 }

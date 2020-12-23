@@ -47,7 +47,7 @@ export class SharedService {
     return { data, count, page: page, take: options.take };
   }
 
-  getMyInfo(context: ExecutionContext): User {
+  getMyInfoThroughCtx(context: ExecutionContext): User {
     const me = GqlExecutionContext.create(context).getContext<ReturnedContext>().user;
     if (!me)
       throw new NotFoundException('[pubsub.interceptor]_getMyInfo: user(me) not found Error');
