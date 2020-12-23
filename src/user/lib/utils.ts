@@ -1,6 +1,5 @@
 import { ReturnedContext } from '~/@graphql/graphql.factory';
 import { NotifyToUserPayload } from '../user.interface';
-import { User } from '@prisma/client';
 
 export const notifyToUserFilter = (
   { notifyToUser }: NotifyToUserPayload,
@@ -16,8 +15,13 @@ export const notifyToUserFilter = (
 // 2. user module 내부에 만들지 않고 따로 뺸 이유는 notifyToUser subscription resolve 함수에 사용하기 위함
 //    - 해당 클래스 내부에 함수를 선언하면 함수를 못 불러옴
 //    - 그래서 외부로 빼 놓은 상황
-export const notifyToUserResolve = ({ notifyToUser }: NotifyToUserPayload, user: User) => {
+export const notifyToUserResolve = (
+  { notifyToUser }: NotifyToUserPayload,
+  _,
+  context: ReturnedContext,
+) => {
   const { info, message } = notifyToUser;
+  const { user } = context;
   const data = Array.isArray(info) ? info.find(v => v.id === user.id) : info;
   return {
     ...data,

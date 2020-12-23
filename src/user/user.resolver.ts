@@ -75,19 +75,24 @@ export class UserResolver {
 
   @Subscription(returns => NotifyToUserOutputGql, {
     filter: notifyToUserFilter,
+    resolve: notifyToUserResolve,
   })
   @Roles('ANY')
   notifyToUser(@GetUser() user: User) {
+    this._pubsubService
+      .getPubsub()
+      .subscribe(
+        PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER,
+        ({ notifyToUser }: NotifyToUserPayload) => {
+          const { info } = notifyToUser;
+          const myInfo = Array.isArray(info) ? info.find(v => v.id === user.id) : info;
+          if (myInfo) {
+            this._notificationService.checkedNotification({ id: myInfo.notificationId });
+          }
+        },
+      );
     return this._pubsubService
       .getPubsub()
-      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER)
-      .next()
-      .then(({ value }: { value: NotifyToUserPayload }) => {
-        const { info } = value.notifyToUser;
-        const myInfo = Array.isArray(info) ? info.find(v => v.id === user.id) : info;
-        // checked -> true
-        this._notificationService.checkedNotification({ id: myInfo.notificationId });
-        return notifyToUserResolve(value, user);
-      });
+      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER);
   }
 }

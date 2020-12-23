@@ -31,11 +31,11 @@ export class CommentInterceptor implements NestInterceptor {
     };
 
     return next.handle().pipe(
-      tap(() => {
-        return this._pubsubService.getPubsub().publish(NOTIFY_TO_USER.TRIGGER, {
+      tap(() =>
+        this._pubsubService.getPubsub().publish(NOTIFY_TO_USER.TRIGGER, {
           [NOTIFY_TO_USER.METHOD_NAME]: publishData,
-        });
-      }),
+        }),
+      ),
     );
   }
 }
