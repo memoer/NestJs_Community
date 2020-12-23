@@ -19,7 +19,7 @@ import { CreateUserArgs, UpdateUserArgs, LoginArgs } from './dtos/input.dto';
 import { GetUserListOutputGql, NotifyToUserOutputGql } from './dtos/output.dto';
 import { PubsubService } from '~/@pubsub/pubsub.service';
 import { NotifyToUserPayload } from './user.interface';
-import { notifyToUserResolve, notifyToUserFilter } from './lib/utils';
+import { notifyToUserResolve, notifyToUserFilter, withCancel } from './lib/utils';
 import { NotificationService } from '~/notification/notification.service';
 
 @Resolver(of => UserModel)
@@ -78,21 +78,26 @@ export class UserResolver {
     resolve: notifyToUserResolve,
   })
   @Roles('ANY')
-  notifyToUser(@GetUser() user: User) {
+  async notifyToUser(@GetUser() user: User) {
     this._pubsubService
       .getPubsub()
       .subscribe(
         PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER,
         ({ notifyToUser }: NotifyToUserPayload) => {
+          if (!user) return;
           const { info } = notifyToUser;
-          const myInfo = Array.isArray(info) ? info.find(v => v.id === user.id) : info;
-          if (myInfo) {
-            this._notificationService.checkedNotification({ id: myInfo.notificationId });
-          }
+          const myInfo = Array.isArray(info)
+            ? info.find(v => v.id === user.id)
+            : info.id === user.id && info;
+          if (!myInfo) return;
+          this._notificationService.checkedNotification({ id: myInfo.notificationId });
         },
       );
-    return this._pubsubService
-      .getPubsub()
-      .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER);
+    return withCancel(
+      this._pubsubService.getPubsub().asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER),
+      () => {
+        user = null;
+      },
+    );
   }
 }
