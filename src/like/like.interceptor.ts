@@ -32,16 +32,13 @@ export class LikeInterceptor implements NestInterceptor {
       info: { id: authorId, notificationId: notification.id },
       message: message,
     };
-    this._pubsubService.getPubsub().publish(NOTIFY_TO_USER.TRIGGER, {
-      [NOTIFY_TO_USER.METHOD_NAME]: publishData,
-    });
 
     return next.handle().pipe(
-      tap(() => {
-        return this._pubsubService.getPubsub().publish(NOTIFY_TO_USER.TRIGGER, {
+      tap(() =>
+        this._pubsubService.getPubsub().publish(NOTIFY_TO_USER.TRIGGER, {
           [NOTIFY_TO_USER.METHOD_NAME]: publishData,
-        });
-      }),
+        }),
+      ),
     );
   }
 }
