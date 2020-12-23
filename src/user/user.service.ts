@@ -19,6 +19,10 @@ export class UserService {
     return include ? { include: { posts: true } } : undefined;
   }
 
+  async notificationCount(id: User['id']): Promise<number> {
+    return this._prismaService.notification.count({ where: { whoId: id } });
+  }
+
   async login({ email, password }: LoginArgs) {
     const user = await this._prismaService.user.findUnique({ where: { email } });
     if (!user) throw new NotFoundException('User not found');

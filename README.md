@@ -32,14 +32,10 @@
 - [x] 게시물에 좋아요 버튼을 누르면 게시물을 작성한 자에게 subscription
 - [x] 댓글을 달 때, 어떠한 유저를 tag하면 해당 유저에게 subscription ('@' tag를 단 유저들에게만 알림이 날라간다.)
 
-# redis
+# Notification
 
-- redis + notification -> 알람
-- 어떻게 진행해야 하는 거지?
-
-# Post
-
-- [ ] hashtag ( # )
+- [x] publish 를 할 경우, notification row 를 생성 -> checked: false
+- [ ] user subscription가 열려있을 경우 -> 해당 notification checked : true
 
 # TDD
 

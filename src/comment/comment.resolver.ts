@@ -26,27 +26,27 @@ export class CommentResolver {
   }
 
   @Mutation(returns => CommentModel)
-  @CheckModelOf('Post', 'EXISTS', 'postId')
+  @CheckModelOf('Post', 'EXISTS', 'authorId', 'postId')
   @UseInterceptors(CommentInterceptor)
   createComment(@GetUser() user: User, @Args() args: CreateCommentArgs): Promise<Comment> {
     return this._commentService.createComment(user, args);
   }
 
   @Mutation(returns => CommentModel)
-  @CheckModelOf('Comment', 'EXISTS', 'parentId')
+  @CheckModelOf('Comment', 'EXISTS', 'authorId', 'parentId')
   @UseInterceptors(CommentInterceptor)
   createChildComment(@GetUser() user: User, @Args() args: CreateChildCommentArgs) {
     return this._commentService.createChildComment(user, args);
   }
 
   @Mutation(returns => Boolean)
-  @CheckModelOf('Comment', 'MINE')
+  @CheckModelOf('Post', 'MINE', 'authorId')
   deleteComment(@Args() args: GetOneArgs): Promise<boolean> {
     return this._commentService.deleteComment(args);
   }
 
   @Mutation(returns => CommentModel)
-  @CheckModelOf('Comment', 'MINE')
+  @CheckModelOf('Comment', 'MINE', 'authorId')
   updateComment(@Args() args: UpdateCommentArgs): Promise<Comment> {
     return this._commentService.updateComment(args);
   }

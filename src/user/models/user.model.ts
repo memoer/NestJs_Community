@@ -8,6 +8,7 @@ import {
   ValidateNested,
   IsPositive,
   IsOptional,
+  IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PostModel } from '~/post/models/post.model';
@@ -38,6 +39,10 @@ export class UserModel implements User {
   @Field(type => String)
   @IsString()
   password: string;
+
+  @Field(type => Date)
+  @IsDate()
+  createdAt: Date;
 
   @Field(type => UserRole)
   @IsEnum(UserRole)

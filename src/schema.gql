@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CheckedAllNotification {
+  count: Int!
+}
+
 type CommentChildModel {
   author: UserModelObjectType!
   authorId: Int!
@@ -56,6 +60,8 @@ type GetUserListOutputGql {
 }
 
 type Mutation {
+  chekcedAllNotification: CheckedAllNotification!
+  chekcedNotification: NotificationModel!
   createChildComment(content: String!, parentId: Int!, tags: [Int]): CommentModelObjectType!
   createComment(content: String!, postId: Int!, tags: [Int]): CommentModelObjectType!
   createLike(postId: Int!): Boolean!
@@ -68,6 +74,14 @@ type Mutation {
   updateComment(content: String, id: Int!, tags: String): CommentModelObjectType!
   updatePost(content: String, id: Int!, title: String): PostWithoutAuthorOutputGql!
   updateUser(email: String, name: String, password: String, role: UserRole): UserModelObjectType!
+}
+
+type NotificationModel {
+  checked: Boolean!
+  content: String!
+  createdAt: DateTime!
+  id: Int!
+  whoId: Int!
 }
 
 type NotifyToUserOutputGql {
@@ -111,9 +125,11 @@ type Subscription {
 }
 
 type UserModelObjectType {
+  createdAt: DateTime!
   email: String!
   id: Int!
   name: String!
+  notificationCount: Int!
   password: String!
   posts: [PostModelObjectType]
   role: UserRole!

@@ -2,13 +2,15 @@ version: '3.8'
 
 services:
   database:
-    container_name: hakhak-comunity-db
-    build:
-      context: .
+    image: postgres
     volumes:
       - ./database:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    environment:
+      - POSTGRES_DB=testDB
+      - POSTGRES_USER=testUser
+      - POSTGRES_PASSWORD=q1w2e3
     networks:
       - hakhak-network
   redis:

@@ -14,6 +14,7 @@ import { LikeModule } from './like/like.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 import { MessageModule } from './#message/message.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MessageModule } from './#message/message.module';
     LikeModule,
     PostModule,
     UserModule,
+    NotificationModule,
   ],
   controllers: [HealthController],
 })

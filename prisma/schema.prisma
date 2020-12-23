@@ -13,26 +13,31 @@ enum Role {
 }
 
 model User {
-  id       Int    @default(autoincrement()) @id
-  name     String @unique
-  email    String @unique
-  password String
-  role     Role
-  posts    Post[]
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  email        String         @unique
+  password     String
+  role         Role
+  createdAt    DateTime       @default(now())
+  posts        Post[]
+  Comment      Comment[]
+  Like         Like[]
+  Notification Notification[]
 }
 
 model Post {
-  id        Int       @default(autoincrement()) @id
+  id        Int       @id @default(autoincrement())
   title     String
   content   String
   createdAt DateTime  @default(now())
   authorId  Int
   author    User      @relation(fields: [authorId], references: [id])
   comments  Comment[]
+  Like      Like[]
 }
 
 model Comment {
-  id        Int       @default(autoincrement()) @id
+  id        Int       @id @default(autoincrement())
   content   String
   createdAt DateTime  @default(now())
   authorId  Int
@@ -42,10 +47,11 @@ model Comment {
   tags      String?
   childs    Comment[] @relation("CommentToComment")
   commentId Int?
+  Comment   Comment?  @relation("CommentToComment", fields: [commentId], references: [id])
 }
 
 model Like {
-  id     Int  @default(autoincrement()) @id
+  id     Int  @id @default(autoincrement())
   userId Int
   user   User @relation(fields: [userId], references: [id])
   postId Int
@@ -55,8 +61,10 @@ model Like {
 }
 
 model Notification {
-  id      Int    @default(autoincrement()) @id
-  content String
-  whoId   Int
-  who     User   @relation(fields: [whoId], references: [id])
+  id        Int      @id @default(autoincrement())
+  whoId     Int
+  content   String
+  checked   Boolean
+  createdAt DateTime @default(now())
+  who       User     @relation(fields: [whoId], references: [id])
 }

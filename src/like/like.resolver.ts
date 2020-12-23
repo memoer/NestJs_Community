@@ -14,7 +14,7 @@ export class LikeResolver {
   constructor(private readonly _likeService: LikeService) {}
 
   @Mutation(returns => Boolean)
-  @CheckModelOf('Post', 'EXISTS', 'postId')
+  @CheckModelOf('Post', 'EXISTS', 'authorId', 'postId')
   @Roles('ANY')
   @UseInterceptors(LikeInterceptor)
   createLike(@GetUser() user: User, @Args() args: CreateLikeInputArgs): Promise<boolean> {
@@ -22,7 +22,7 @@ export class LikeResolver {
   }
 
   @Mutation(returns => Boolean)
-  @CheckModelOf('Like', 'EXISTS')
+  @CheckModelOf('Like', 'EXISTS', 'authorId')
   deleteLike(@Args() args: DeleteLikeInputArgs): Promise<boolean> {
     return this._likeService.deleteLike(args);
   }

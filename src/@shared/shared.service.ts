@@ -53,4 +53,13 @@ export class SharedService {
       throw new NotFoundException('[pubsub.interceptor]_getMyInfo: user(me) not found Error');
     return me;
   }
+
+  stripObject(obj: Record<string, any>) {
+    return Object.keys(obj).reduce((strippedObj, key) => {
+      if (obj[key]) {
+        strippedObj[key] = obj[key];
+      }
+      return strippedObj;
+    }, {});
+  }
 }

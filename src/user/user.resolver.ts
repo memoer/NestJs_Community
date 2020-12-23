@@ -1,4 +1,13 @@
-import { Resolver, Mutation, Query, Args, Subscription } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Query,
+  Args,
+  Subscription,
+  ResolveField,
+  Int,
+  Parent,
+} from '@nestjs/graphql';
 import { User } from '@prisma/client';
 import { GetUser } from '~/@auth/user.decorator';
 import { Roles } from '~/@auth/roles.decorator';
@@ -20,6 +29,11 @@ export class UserResolver {
     private readonly _userService: UserService,
     private readonly _pubsubService: PubsubService,
   ) {}
+
+  @ResolveField(type => Int)
+  notificationCount(@Parent() data: User): Promise<number> {
+    return this._userService.notificationCount(data.id);
+  }
 
   @Query(returns => String)
   login(@Args() args: LoginArgs): Promise<string> {
@@ -65,7 +79,8 @@ export class UserResolver {
     resolve: notifyToUserResolve,
   })
   @Roles('ANY')
-  notifyToUser() {
+  notifyToUser(@Parent() data: any) {
+    console.log(data);
     return this._pubsubService
       .getPubsub()
       .asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER);

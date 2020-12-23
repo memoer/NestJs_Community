@@ -45,13 +45,13 @@ export class PostResolver {
   }
 
   @Mutation(returns => Boolean)
-  @CheckModelOf('Post', 'MINE')
+  @CheckModelOf('Post', 'MINE', 'authorId')
   deletePost(@Args() args: GetOneArgs): Promise<boolean> {
     return this._postService.deletePost(args);
   }
 
   @Mutation(returns => PostWithoutAuthorOutputGql)
-  @CheckModelOf('Post', 'MINE')
+  @CheckModelOf('Post', 'MINE', 'authorId')
   updatePost(@Args() args: UpdatePostArgs): Promise<Post> {
     return this._postService.updatePost(args);
   }
