@@ -96,6 +96,7 @@ export class UserResolver {
     return withCancel(
       this._pubsubService.getPubsub().asyncIterator(PubsubService.VALUES.NOTIFY_TO_USER.TRIGGER),
       () => {
+        // clean ( subscription 연결 종료 후, user 정보 이슈 )
         user = null;
       },
     );
